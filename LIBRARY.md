@@ -7,8 +7,12 @@ been checked against the original by a person (`no`, or who and when).
 
 | Material | Description | Model | Valid range [THz] | Sources |
 |----------|-------------|-------|-------------------|---------|
-| air | constant | constant | 0.1-20, 350-1000 | `bipm2019` |
-| Al | thz | drude | 0.1-6 | `ashcroft1976`, `ordal1985` |
+| air | thz | constant | 0.001-177.4 | `bipm2019` |
+| air | optical | constant | 177.4-1303.4 | `ciddor1996`, `polyanskiy2024` |
+| Al | lorentz_drude | drude_lorentz | 1.21-4835 | `rakic1998`, `polyanskiy2024` |
+| Al | optical | tabulated | 1.5-2.4e+06 | `rakic1995`, `polyanskiy2024` |
+| Be | lorentz_drude | drude_lorentz | 24.18-1450 | `rakic1998` |
+| Cr | lorentz_drude | drude_lorentz | 16.69-1208 | `rakic1998` |
 | GaAs | thz | drude_lorentz | 0.1-20 | `levinshtein1996`, `palik1985`, `sotoodeh2000` |
 | GaAs | optical | tabulated | 332-1498 | `palik1985` |
 | GaN | optical | tabulated | 822-2418 | `kawashima1997`, `logothetidis1994` |
@@ -17,21 +21,37 @@ been checked against the original by a person (`no`, or who and when).
 | In053Ga047As | thz | drude | 0.1-20 | `levinshtein1999`, `sotoodeh2000` |
 | InP | thz | drude_lorentz | 0.06-21 | `alyabyeva2017`, `levinshtein1996`, `bennett1990`, `sotoodeh2000` |
 | InP | optical | tabulated | 308-1498 | `glembocki1985` |
+| Ni | lorentz_drude | drude_lorentz | 48.36-1208 | `rakic1998` |
+| Pd | lorentz_drude | drude_lorentz | 24.18-1450 | `rakic1998` |
+| Pt | lorentz_drude | drude_lorentz | 24.18-1450 | `rakic1998` |
 | Si | thz | drude_lorentz | 0.1-4.5 | `dai2004`, `wollack2020`, `vanexter1990`, `caughey1967` |
 | Si | optical | tabulated | 0.97-9670 | `franta2017` |
 | SiN | optical | tabulated | 178-1418 | `beliaev2022` |
 | SiO2 | thz | lorentz | 0.1-20 | `komandin2020` |
+| Ti | lorentz_drude | drude_lorentz | 14.51-628.6 | `rakic1998` |
+| W | lorentz_drude | drude_lorentz | 24.18-1450 | `rakic1998` |
 
 ## Sources
 
 ### air
 
-- `bipm2019` (url https://www.bipm.org/en/publications/si-brochure): Bureau International des Poids et Mesures, The International System of Units (SI brochure), 9th edition (2019). Location: Section 2.3.1, the exactly defined speed of light in vacuum, so n = 1 for vacuum (candidate source; optpumpthz gave none). Valid: 0.1-20, 350-1000 THz. Checked: no.
+- `ciddor1996` (doi 10.1364/AO.35.001566): P. E. Ciddor, "Refractive index of air: new equations for the visible and near infrared", Appl. Opt. 35, 1566-1573 (1996). Location: Full model (Eqs. 1-4 plus appendix constants), evaluated at t = 20 °C, p = 101325 Pa, h = 0.40, xc = 450 ppm. Valid: 177.4-1303.4 THz. Checked: C. Scheper, 2026-10-27.
+- `polyanskiy2024` (doi 10.1038/s41597-023-02898-2): M. N. Polyanskiy, "Refractiveindex.info database of optical constants", Sci. Data 11, 94 (2024). Location: Python implementation of the Ciddor (1996) model for air in the refractiveindex.info database (2017 version, refactored 2024), used to evaluate ciddor1996. Valid: 177.4-1303.4 THz. Checked: C. Scheper, 2026-10-27.
+- `bipm2019` (url https://www.bipm.org/en/publications/si-brochure): Bureau International des Poids et Mesures, The International System of Units (SI brochure), 9th edition (2019). Location: Section 2.3.1, the exactly defined speed of light in vacuum, so n = 1 for vacuum: the lower bound of the index of air below the Ciddor range. Because the deviation of air from it there is  likely well below the error budget of a THz-TDS extraction (sample thickness, timing, SNR).. Valid: 0.001-177.4 THz. Checked: C. Scheper, 2026-10-27.
 
 ### Al
 
-- `ashcroft1976` (isbn 0-03-083993-9): N. W. Ashcroft, N. D. Mermin, Solid State Physics, Holt, Rinehart and Winston (1976). Location: Ch. 1, Table 1.1 (free-electron density of Al, 18.1e22 cm^-3); free-electron mass and eps_inf = 1 from the free-electron model of Ch. 1. Valid: 0.1-6 THz. Checked: no.
-- `ordal1985` (doi 10.1364/AO.24.004493): M. A. Ordal, R. J. Bell, R. W. Alexander, L. L. Long, M. R. Querry, Optical properties of fourteen metals in the infrared and far infrared: Al, Co, Cu, Au, Fe, Pb, Mo, Ni, Pd, Pt, Ag, Ti, V, and W, Appl. Opt. 24, 4493-4499 (1985). Location: Drude damping of Al, omega_tau = 660 cm^-1 = 19.79 THz, so tau = 1/(2 pi 19.79 THz) = 8.0e-15 s (to be located exactly; deposited films typically have tau = 5-7e-15 s from grain boundaries). Valid: 0.1-6 THz. Checked: no.
+- `rakic1998` (doi 10.1364/AO.37.005271): A. D. Rakić, A. B. Djurišić, J. M. Elazar, M. L. Majewski, Optical properties of metallic films for vertical-cavity optoelectronic devices, Appl. Opt. 37, 5271-5283 (1998). Location: Table 1 (omega_p) and Table 2 (LD model parameters), column Al. Sec. 3D: fitted to the Rakic (1995) data (6.2 meV-10 keV); the fit range is not given, the paper's range is 0.1-6 eV. The range here, 0.005-20 eV, is that of the refractiveindex.info script (polyanskiy2024). Valid: 1.21-4835 THz. Checked: C. Scheper, 2026-10-27.
+- `rakic1995` (doi 10.1364/AO.34.004755): A. D. Rakić, Algorithm for the determination of intrinsic optical constants of metal films: application to aluminum, Appl. Opt. 34, 4755-4767 (1995). Location: n, k at 0.000124-200 um (refractiveindex.info export, polyanskiy2024; the table or figure in the paper to be located exactly). Valid: 1.5-2.4e+06 THz. Checked: C. Scheper, 2026-10-27.
+- `polyanskiy2024` (doi 10.1038/s41597-023-02898-2): M. N. Polyanskiy, "Refractiveindex.info database of optical constants", Sci. Data 11, 94 (2024). Location: refractiveindex.info database, Al: the Rakic (1995) n, k data (0.000124-200 um), exported as Al_Rakic1995.csv, and the Python implementation of the Rakic et al. (1998) Lorentz-Drude model (M. N. Polyanskiy, 2017; 0.005-20 eV), used to evaluate rakic1995 and rakic1998. Valid: 1.21-2.4e+06 THz. Checked: C. Scheper, 2026-10-27.
+
+### Be
+
+- `rakic1998` (doi 10.1364/AO.37.005271): A. D. Rakić, A. B. Djurišić, J. M. Elazar, M. L. Majewski, Optical properties of metallic films for vertical-cavity optoelectronic devices, Appl. Opt. 37, 5271-5283 (1998). Location: Table 1 (omega_p) and Table 2 (LD model parameters), column Be. Sec. 3E: fitted to Arakawa et al. (K-K analysis, 0.06-26 eV); range = the paper's 0.1-6 eV. Valid: 24.18-1450 THz. Checked: C. Scheper, 2026-10-27.
+
+### Cr
+
+- `rakic1998` (doi 10.1364/AO.37.005271): A. D. Rakić, A. B. Djurišić, J. M. Elazar, M. L. Majewski, Optical properties of metallic films for vertical-cavity optoelectronic devices, Appl. Opt. 37, 5271-5283 (1998). Location: Table 1 (omega_p) and Table 2 (LD model parameters), column Cr. Sec. 3F: fitted to Kirillova and Noskov (0.069-0.41 eV) and Bos and Lynch (0.46-5 eV). Valid: 16.69-1208 THz. Checked: C. Scheper, 2026-10-27.
 
 ### GaAs
 
@@ -65,6 +85,18 @@ been checked against the original by a person (`no`, or who and when).
 - `alyabyeva2017` (doi 10.1038/s41598-017-07164-1): L. N. Alyabyeva, E. S. Zhukova, M. A. Belkin, B. P. Gorshunov, Dielectric properties of semi-insulating Fe-doped InP in the terahertz spectral region, Sci. Rep. 7, 7360 (2017). Location: Table 1 (Delta eps; nu and gamma in cm^-1, converted here to rad/s as omega = 2 pi c nu); spectra 2-700 cm^-1 at room temperature. Valid: 0.06-21 THz. Checked: no.
 - `glembocki1985` (isbn 0-12-544420-6): O. J. Glembocki, H. Piller, Indium Phosphide (InP), in E. D. Palik (ed.), Handbook of Optical Constants of Solids, Academic Press, Orlando (1985). Location: p. 503, Table VIII (transcribed 0.2-2.8 um; k not tabulated beyond 0.975 um). Valid: 308-1498 THz. Checked: no.
 
+### Ni
+
+- `rakic1998` (doi 10.1364/AO.37.005271): A. D. Rakić, A. B. Djurišić, J. M. Elazar, M. L. Majewski, Optical properties of metallic films for vertical-cavity optoelectronic devices, Appl. Opt. 37, 5271-5283 (1998). Location: Table 1 (omega_p) and Table 2 (LD model parameters), column Ni. Sec. 3G: fitted to Lynch and Hunter between 0.2 and 5 eV. Valid: 48.36-1208 THz. Checked: C. Scheper, 2026-10-27.
+
+### Pd
+
+- `rakic1998` (doi 10.1364/AO.37.005271): A. D. Rakić, A. B. Djurišić, J. M. Elazar, M. L. Majewski, Optical properties of metallic films for vertical-cavity optoelectronic devices, Appl. Opt. 37, 5271-5283 (1998). Location: Table 1 (omega_p) and Table 2 (LD model parameters), column Pd. Sec. 3H: fitted to Weaver and Benbow (0.1-0.6 eV) and Johnson and Christy (0.6-6 eV). Valid: 24.18-1450 THz. Checked: C. Scheper, 2026-10-27.
+
+### Pt
+
+- `rakic1998` (doi 10.1364/AO.37.005271): A. D. Rakić, A. B. Djurišić, J. M. Elazar, M. L. Majewski, Optical properties of metallic films for vertical-cavity optoelectronic devices, Appl. Opt. 37, 5271-5283 (1998). Location: Table 1 (omega_p) and Table 2 (LD model parameters), column Pt. Sec. 3I: fitted to Weaver (K-K analysis); no fit range given, so the paper's 0.1-6 eV. Valid: 24.18-1450 THz. Checked: C. Scheper, 2026-10-27.
+
 ### Si
 
 - `wollack2020` (doi 10.1364/OL.393847): E. J. Wollack, G. Cataldo, K. H. Miller, M. A. Quijada, Infrared properties of high-purity silicon, Opt. Lett. 45, 4935-4938 (2020). Location: eps_inf = 11.7 (n = 3.42 below the phonon absorption; to be located exactly). Valid: 0.1-4.5 THz. Checked: no.
@@ -80,4 +112,12 @@ been checked against the original by a person (`no`, or who and when).
 ### SiO2
 
 - `komandin2020` (doi 10.1134/S1063783420020158): G. A. Komandin, V. S. Nozdrin, A. A. Pronin, O. E. Porodinkov, V. B. Anzin, I. E. Spektor, Dielectric loss of thin-film SiO2 samples on Al in THz-IR range, Phys. Solid State 62, 267-272 (2020). Location: oscillator parameters (to be located exactly; nu and gamma in cm^-1 in the paper, converted here to rad/s as omega = 2 pi c nu). Valid: 0.1-20 THz. Checked: no.
+
+### Ti
+
+- `rakic1998` (doi 10.1364/AO.37.005271): A. D. Rakić, A. B. Djurišić, J. M. Elazar, M. L. Majewski, Optical properties of metallic films for vertical-cavity optoelectronic devices, Appl. Opt. 37, 5271-5283 (1998). Location: Table 1 (omega_p) and Table 2 (LD model parameters), column Ti. Sec. 3J: fitted to Kirillova and Charikov between 0.06 and 2.6 eV. Valid: 14.51-628.6 THz. Checked: C. Scheper, 2026-10-27.
+
+### W
+
+- `rakic1998` (doi 10.1364/AO.37.005271): A. D. Rakić, A. B. Djurišić, J. M. Elazar, M. L. Majewski, Optical properties of metallic films for vertical-cavity optoelectronic devices, Appl. Opt. 37, 5271-5283 (1998). Location: Table 1 (omega_p) and Table 2 (LD model parameters), column W. Sec. 3K: fitted to Weaver et al. (K-K analysis); no fit range given, so the paper's 0.1-6 eV. Valid: 24.18-1450 THz. Checked: C. Scheper, 2026-10-27.
 

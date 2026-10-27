@@ -33,7 +33,7 @@ def test_bundled_library_passes_every_offline_rule_and_overview_is_current():
     result = check_library(overview_path=REPOSITORY_ROOT / "LIBRARY.md")
     assert result.problems == {}
     assert result.passed
-    assert len(result.materials) == 10
+    assert len(result.materials) == 17
 
 
 def test_material_template_loads_and_passes_every_offline_rule(tmp_path):

@@ -7,7 +7,7 @@
 #   python -m cjcmaterials.check_library --write-overview    # ... and regenerate LIBRARY.md
 #   python -m cjcmaterials.check_library my/folder --online  # your own folder, DOIs and URLs resolved
 #
-# The values below are real ones from the library (air, Al and Si), so this file loads and passes the
+# The values below are real, sourced ones (air, Al and Si as in the library of v0.1.0), so this file loads and passes the
 # checker as it is (tests/test_checker.py); together they are not a real material.
 #
 # Rules:

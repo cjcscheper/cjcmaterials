@@ -10,6 +10,8 @@ from cjcmaterials import (
     ELECTRON_MASS,
     ELEMENTARY_CHARGE,
     LIBRARY_DIR,
+    REDUCED_PLANCK_CONSTANT,
+    SPEED_OF_LIGHT,
     VACUUM_PERMITTIVITY,
     available_materials,
     conductivity,
@@ -24,8 +26,30 @@ from conftest import GOOD_MATERIAL, write_material
 
 OWN_LIBRARY = Path(__file__).resolve().parent / "data" / "own_library"
 
-# Every material of optpumpthz (n- and p-type variants merged) plus the two new tabulated ones.
-PORTED_MATERIALS = ["air", "Al", "GaAs", "GaN", "Graphene", "In053Ga047As", "InP", "Si", "SiN", "SiO2"]
+# Every material of optpumpthz (n- and p-type variants merged), the two new tabulated ones and the
+# Rakic (1998) Lorentz-Drude metals.
+BUNDLED_MATERIALS = ["air", "Al", "Be", "Cr", "GaAs", "GaN", "Graphene", "In053Ga047As", "InP", "Ni", "Pd", "Pt",
+                     "Si", "SiN", "SiO2", "Ti", "W"]
+
+# Rakic et al. (1998) in eV: Table 1 (omega_p) and Table 2 (f_0, Gamma_0, then f_k, Gamma_k, omega_k).
+RAKIC_1998_LD = {
+    "Al": (14.98, 0.523, 0.047, [(0.227, 0.333, 0.162), (0.050, 0.312, 1.544), (0.166, 1.351, 1.808),
+                                 (0.030, 3.382, 3.473)]),
+    "Be": (18.51, 0.084, 0.035, [(0.031, 1.664, 0.100), (0.140, 3.395, 1.032), (0.530, 4.454, 3.183),
+                                 (0.130, 1.802, 4.604)]),
+    "Cr": (10.75, 0.168, 0.047, [(0.151, 3.175, 0.121), (0.150, 1.305, 0.543), (1.149, 2.676, 1.970),
+                                 (0.825, 1.335, 8.775)]),
+    "Ni": (15.92, 0.096, 0.048, [(0.100, 4.511, 0.174), (0.135, 1.334, 0.582), (0.106, 2.178, 1.597),
+                                 (0.729, 6.292, 6.089)]),
+    "Pd": (9.72, 0.330, 0.008, [(0.649, 2.950, 0.336), (0.121, 0.555, 0.501), (0.638, 4.621, 1.659),
+                                (0.453, 3.236, 5.715)]),
+    "Pt": (9.59, 0.333, 0.080, [(0.191, 0.517, 0.780), (0.659, 1.838, 1.314), (0.547, 3.668, 3.141),
+                                (3.576, 8.517, 9.249)]),
+    "Ti": (7.29, 0.148, 0.082, [(0.899, 2.276, 0.777), (0.393, 2.518, 1.545), (0.187, 1.663, 2.509),
+                                (0.001, 1.762, 19.43)]),
+    "W": (13.22, 0.206, 0.064, [(0.054, 0.530, 1.004), (0.166, 1.281, 1.917), (0.706, 3.332, 3.580),
+                                (2.590, 5.836, 7.498)]),
+}
 
 
 def thz(*freq_thz):
@@ -35,7 +59,7 @@ def thz(*freq_thz):
 
 def test_every_bundled_material_loads_with_sources_and_ranges():
     """All files load; every description has a source and a valid range; the list is complete."""
-    assert available_materials() == sorted(PORTED_MATERIALS, key=str.lower)
+    assert available_materials() == sorted(BUNDLED_MATERIALS, key=str.lower)
     for name in available_materials():
         material = get_material(name)
         assert material.name == name
@@ -169,14 +193,44 @@ def test_carrier_density_array_gives_one_row_per_density():
 
 
 def test_metal_carrier_density_from_the_file_and_overridden_at_use_time():
-    """Al takes N = 1.81e29 m^-3 from its file, so it is metallic by default; a given density replaces it."""
+    """Al takes N = 8.51e28 m^-3 from its file; without carriers only the Lorentz oscillators remain."""
     material = get_material("Al")
-    sigma = conductivity(material, thz(0.1))
-    tau = 8.0e-15
-    # eps_inf = 1 for Al, so the total conductivity equals the Drude one: sigma_DC / (1 - i omega tau).
-    sigma_dc = 1.81e29 * ELEMENTARY_CHARGE**2 * tau / ELECTRON_MASS
-    assert sigma == pytest.approx(sigma_dc / (1 - 1j * thz(0.1)[0] * tau), rel=1e-9)
-    assert abs(conductivity(material, thz(0.1), carrier_density=0.0)) < 1e-6
+    omega = thz(1.3)
+    with_carriers = conductivity(material, omega)
+    without_carriers = conductivity(material, omega, carrier_density=0.0)
+    # Bound and free charges add, so the difference is the Drude conductivity sigma_DC / (1 - i omega tau).
+    tau = 1.400451e-14
+    sigma_dc = 8.51159e28 * ELEMENTARY_CHARGE**2 * tau / ELECTRON_MASS
+    assert with_carriers - without_carriers == pytest.approx(sigma_dc / (1 - 1j * omega[0] * tau), rel=1e-9)
+
+
+@pytest.mark.parametrize("name", sorted(RAKIC_1998_LD))
+def test_lorentz_drude_metals_match_rakic_formula_in_electronvolt(name):
+    """The SI parameters of each metal reproduce Rakic's Lorentz-Drude formula over its range, written in eV."""
+    omega_p, f_0, gamma_0, oscillators_ev = RAKIC_1998_LD[name]
+    material = get_material(name)
+    (low_thz, high_thz), = select_description(material, thz(100.0), description="lorentz_drude").valid_range_thz
+    omega = thz(*np.geomspace(low_thz * 1.001, high_thz * 0.999, 50))
+    energy_ev = REDUCED_PLANCK_CONSTANT * omega / ELEMENTARY_CHARGE
+    # eps = 1 - f_0 omega_p^2 / (w (w + i Gamma_0)) + sum f_k omega_p^2 / (w_k^2 - w^2 - i w Gamma_k).
+    expected = 1 - f_0 * omega_p**2 / (energy_ev * (energy_ev + 1j * gamma_0))
+    for strength, damping, resonance in oscillators_ev:
+        expected = expected + strength * omega_p**2 / (resonance**2 - energy_ev**2 - 1j * energy_ev * damping)
+    eps = permittivity(material, omega, description="lorentz_drude")
+    np.testing.assert_allclose(eps, expected, rtol=1e-4)
+
+
+def test_aluminium_table_values_and_overlap_with_the_lorentz_drude_description():
+    """The Rakic table gives its own rows (n = 1.366, k = 7.4052 at 619.93 nm); at 3 THz both descriptions apply."""
+    material = get_material("Al")
+    omega = 2 * np.pi * SPEED_OF_LIGHT / 0.61993e-6
+    assert refractive_index(material, omega, description="optical") == pytest.approx(1.366 + 7.4052j, rel=1e-6)
+    with pytest.raises(ValueError, match="Several descriptions of Al cover"):
+        refractive_index(material, thz(3.0))
+    # The 1998 model and the 1995 table of the same group agree to within 5 % where they overlap.
+    model = refractive_index(material, thz(3.0), description="lorentz_drude")
+    table = refractive_index(material, thz(3.0), description="optical")
+    assert abs(model - table) / abs(table) < 0.05
 
 
 def test_graphene_needs_a_sheet_density():

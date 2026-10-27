@@ -127,7 +127,7 @@ constants `SPEED_OF_LIGHT`, `VACUUM_PERMITTIVITY`, `ELEMENTARY_CHARGE`,
 ```python
 from cjcmaterials import available_materials
 available_materials()
-# ['air', 'Al', 'GaAs', 'GaN', 'Graphene', 'In053Ga047As', 'InP', 'Si', 'SiN', 'SiO2']
+# ['air', 'Al', 'Be', 'Cr', 'GaAs', 'GaN', 'Graphene', 'In053Ga047As', 'InP', 'Ni', 'Pd', 'Pt', 'Si', 'SiN', 'SiO2', 'Ti', 'W']
 ```
 
 [LIBRARY.md](LIBRARY.md) lists every description with its model, range and

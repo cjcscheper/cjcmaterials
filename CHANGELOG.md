@@ -6,6 +6,28 @@ existing scripts.
 
 ## [Unreleased]
 
+### Added
+- Be, Cr, Ni, Pd, Pt, Ti and W: the Lorentz–Drude model of Rakić et al.
+  (1998), Tables 1 and 2, converted from eV to SI; each valid over the
+  energy range its fit used (0.06–6 eV depending on the metal, so from
+  14.5–48 THz upwards).
+- Al: the refractiveindex.info database (Polyanskiy 2024) as a second
+  source of both descriptions.
+- Al: an optical description from the Rakić (1995) n, k table,
+  0.000124–200 µm (1.5–2.4·10⁶ THz); it overlaps the Lorentz–Drude
+  description at 1.5–4835 THz, where `description=` chooses.
+
+### Changed
+- Al: the free-electron Drude description `thz` (0.1–6 THz, Ashcroft and
+  Mermin, Ordal 1985) is replaced by Rakić (1998)'s Lorentz–Drude model,
+  `lorentz_drude`, valid 1.21–4835 THz (its fit range 0.005–20 eV); the
+  parameters are converted from eV to SI. Scripts using
+  `description="thz"` for Al need `description="lorentz_drude"`; below
+  1.21 THz it now warns.
+- air: lab air with n = 1.0003 from the Ciddor (1996) model instead of
+  vacuum. Two descriptions: `optical` (177.4–1303.4 THz, Ciddor) and `thz`
+  (0.001–177.4 THz, the same constant continued, bounded by vacuum n = 1).
+
 ## [0.1.0] - 2026-10-27
 
 First release: the material models and library of optpumpthz, redesigned as a

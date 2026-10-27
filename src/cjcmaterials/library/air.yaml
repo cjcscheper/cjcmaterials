@@ -1,10 +1,36 @@
 # cjcmaterials material file; syntax and field order: material_template.yaml in the repository root.
 name: air
 note: >-
-  Dry air approximated as vacuum (n = 1). Ported from optpumpthz (air), which gave no source. The
-  real index of air is n - 1 ~ 2.7e-4 in the visible (Ciddor, Appl. Opt. 35, 1566 (1996)), and humid
-  air has water-vapour absorption lines in the THz range; both are neglected here.
+  Ambient lab air (20 °C, 40 % relative humidity, 101325 Pa, 450 ppm CO2) from the Ciddor (1996)
+  model, rounded to a constant that holds over the whole optical range (Ciddor varies from
+  1.0002681 at 1.69 um to 1.0003025 at 0.23 um, so the rounding error is at most 3.2e-5).
+  The Ciddor model only covers 0.23-1.69 um; the same constant is used below the Ciddor range
+  because the deviation of air from it there is likely well below the error budget of a THz-TDS
+  extraction (sample thickness, timing, SNR). Absorption lines of water vapour and CO2 are
+  neglected here and handled experimentally (purge or reference normalisation).
 sources:
+  ciddor1996:
+    type: doi
+    id: 10.1364/AO.35.001566
+    citation: >-
+      P. E. Ciddor, "Refractive index of air: new equations for the visible and near infrared",
+      Appl. Opt. 35, 1566-1573 (1996)
+    location: >-
+      Full model (Eqs. 1-4 plus appendix constants), evaluated at t = 20 °C, p = 101325 Pa,
+      h = 0.40, xc = 450 ppm
+    valid_range_thz: [[177.4, 1303.4]]
+    checked: "C. Scheper, 2026-10-27"
+  polyanskiy2024:
+    type: doi
+    id: 10.1038/s41597-023-02898-2
+    citation: >-
+      M. N. Polyanskiy, "Refractiveindex.info database of optical constants", Sci. Data 11, 94
+      (2024)
+    location: >-
+      Python implementation of the Ciddor (1996) model for air in the refractiveindex.info
+      database (2017 version, refactored 2024), used to evaluate ciddor1996
+    valid_range_thz: [[177.4, 1303.4]]
+    checked: "C. Scheper, 2026-10-27"
   bipm2019:
     type: url
     id: https://www.bipm.org/en/publications/si-brochure
@@ -12,15 +38,29 @@ sources:
       Bureau International des Poids et Mesures, The International System of Units (SI brochure),
       9th edition (2019)
     location: >-
-      Section 2.3.1, the exactly defined speed of light in vacuum, so n = 1 for vacuum (candidate
-      source; optpumpthz gave none)
-    valid_range_thz: [[0.1, 20], [350, 1000]]
-    checked: no
+      Section 2.3.1, the exactly defined speed of light in vacuum, so n = 1 for vacuum: the lower
+      bound of the index of air below the Ciddor range. Because the deviation of air from it there is 
+      likely well below the error budget of a THz-TDS extraction (sample thickness, timing, SNR).
+    valid_range_thz: [[0.001, 177.4]]
+    checked: "C. Scheper, 2026-10-27"
 descriptions:
-  - label: constant
+  - label: thz
     model: constant
-    valid_range_thz: [[0.1, 20], [350, 1000]]
+    valid_range_thz: [[0.001, 177.4]]
     sources: [bipm2019]
-    note: The two ranges are those of optpumpthz (THz and optical regime).
+    note: >-
+      Below the Ciddor range no model is used: the Ciddor constant is continued, so that air has one
+      index everywhere. It lies 3e-4 above vacuum (n = 1, bipm2019), likely below the error budget of
+      a THz-TDS extraction; absorption lines of water vapour and CO2 are neglected.
     parameters:
-      n: 1.0
+      n: 1.0003
+  - label: optical
+    model: constant
+    valid_range_thz: [[177.4, 1303.4]]
+    sources: [ciddor1996, polyanskiy2024]
+    note: >-
+      Ciddor covers 0.23-1.69 um (177.4-1303.4 THz), bounds rounded inward; the constant is rounded
+      to 4 decimals, the finest rounding that is the same at both ends. Not valid above 1303.4 THz
+      (O2 absorption in the vacuum UV).
+    parameters:
+      n: 1.0003

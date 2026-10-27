@@ -1,0 +1,41 @@
+# cjcmaterials material file; syntax and field order: material_template.yaml in the repository root.
+name: Be
+note: >-
+  Beryllium (evaporated films and bulk, room temperature), as the Lorentz-Drude model of Rakic et
+  al. (1998). The Drude term's carrier_density is an effective density N m_e / m*, not the electron
+  density of the metal (see the description); a carrier_density passed at use time replaces it.
+sources:
+  rakic1998:
+    type: doi
+    id: 10.1364/AO.37.005271
+    citation: >-
+      A. D. Rakić, A. B. Djurišić, J. M. Elazar, M. L. Majewski, Optical properties of metallic films
+      for vertical-cavity optoelectronic devices, Appl. Opt. 37, 5271-5283 (1998)
+    location: >-
+      Table 1 (omega_p) and Table 2 (LD model parameters), column Be. Sec. 3E: fitted to Arakawa
+      et al. (K-K analysis, 0.06-26 eV); range = the paper's 0.1-6 eV
+    valid_range_thz: [[24.18, 1450]]
+    checked: "C. Scheper, 2026-10-27"
+descriptions:
+  - label: lorentz_drude
+    model: drude_lorentz
+    valid_range_thz: [[24.18, 1450]]
+    sources: [rakic1998]
+    note: >-
+      The fit range 0.1-6 eV, bounds rounded inward. In SI units: tau = hbar / Gamma_0 and each
+      oscillator's strength = f_k omega_p^2 / omega_k^2; eps_inf = 1 is the paper's, since the
+      interband part is in the oscillators. CARRIER DENSITY: the paper gives only the Drude plasma
+      frequency Omega_p = sqrt(f_0) omega_p, not the electron density N and effective mass m*
+      separately. With effective_mass_ratio = 1, carrier_density is the effective density N m_e / m*
+      = Omega_p^2 eps0 m_e / e^2 that reproduces Omega_p; it is not the electron density of the
+      metal, and a carrier_density passed at use time is read the same way.
+    parameters:
+      eps_inf: 1.0
+      effective_mass_ratio: 1.0
+      carrier_density: 2.087265e28          # effective N m_e/m*, f_0 = 0.084, omega_p = 18.51 eV
+      scattering_time: 1.880606e-14        # Gamma_0 = 0.035 eV
+      oscillators:                         # f_k, Gamma_k [eV], omega_k [eV]
+        - {strength: 1062.12, resonance_omega: 1.519267e14, damping: 2.528061e15}   # 0.031, 1.664, 0.1
+        - {strength: 45.0382, resonance_omega: 1.567884e15, damping: 5.157913e15}   # 0.14, 3.395, 1.032
+        - {strength: 17.9232, resonance_omega: 4.835828e15, damping: 6.766817e15}   # 0.53, 4.454, 3.183
+        - {strength: 2.10129, resonance_omega: 6.994707e15, damping: 2.737720e15}   # 0.13, 1.802, 4.604
