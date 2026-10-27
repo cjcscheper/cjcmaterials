@@ -26,7 +26,7 @@ sources:
       compounds applicable in device simulation codes, J. Appl. Phys. 87, 2890-2900 (2000)
     location: Table I
     valid_range_thz: [[0.1, 10]]
-    checked: "C. Scheper, 2026-10-27"
+    checked: "J. Doe, 2026-10-27"
 descriptions:
   - label: thz
     model: drude

@@ -90,7 +90,7 @@ def test_missing_source_fields_and_bad_type_are_reported(tmp_path):
 
 def test_bad_checked_field_unused_source_and_name_mismatch_are_reported(tmp_path):
     """'checked: yes' says nothing about who and when; a source nobody uses and a wrong name are flagged."""
-    folder = broken(tmp_path, 'checked: "C. Scheper, 2026-10-27"', "checked: yes")
+    folder = broken(tmp_path, 'checked: "J. Doe, 2026-10-27"', "checked: yes")
     assert any("checked must be 'no' or '<who>, <YYYY-MM-DD>'" in m for m in problems_of(folder, "completeness"))
     folder = broken(tmp_path, "descriptions:", "  spare:\n    type: url\n    id: https://example.org\n"
                     "    citation: x\n    location: y\n    valid_range_thz: [[1, 2]]\n    checked: no\ndescriptions:")

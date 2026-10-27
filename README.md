@@ -163,7 +163,7 @@ sources:
     citation: L. N. Alyabyeva et al., Dielectric properties of semi-insulating Fe-doped InP ..., Sci. Rep. 7, 7360 (2017)
     location: Table 1                       # where the values are
     valid_range_thz: [[0.06, 21]]           # where they apply [THz]
-    checked: no                             # after checking: "C. Scheper, 2026-11-02"
+    checked: no                             # after checking: "J. Doe, 2026-11-02"
   sotoodeh2000: {...}
 descriptions:
   - label: thz
