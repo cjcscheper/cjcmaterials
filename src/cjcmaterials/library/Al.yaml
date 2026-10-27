@@ -1,0 +1,39 @@
+# cjcmaterials material file; syntax and field order: material_template.yaml in the repository root.
+name: Al
+note: >-
+  Aluminium (bulk). Ported from optpumpthz (Al). Its optical table there was a placeholder
+  (n = 1.5, k = 0) and is not ported. The free-electron density is a material constant of a metal,
+  so this description gives it; a carrier_density passed at use time replaces it.
+sources:
+  ashcroft1976:
+    type: isbn
+    id: 0-03-083993-9
+    citation: N. W. Ashcroft, N. D. Mermin, Solid State Physics, Holt, Rinehart and Winston (1976)
+    location: >-
+      Ch. 1, Table 1.1 (free-electron density of Al, 18.1e22 cm^-3); free-electron mass and
+      eps_inf = 1 from the free-electron model of Ch. 1
+    valid_range_thz: [[0.1, 6]]
+    checked: no
+  ordal1985:
+    type: doi
+    id: 10.1364/AO.24.004493
+    citation: >-
+      M. A. Ordal, R. J. Bell, R. W. Alexander, L. L. Long, M. R. Querry, Optical properties of
+      fourteen metals in the infrared and far infrared: Al, Co, Cu, Au, Fe, Pb, Mo, Ni, Pd, Pt, Ag,
+      Ti, V, and W, Appl. Opt. 24, 4493-4499 (1985)
+    location: >-
+      Drude damping of Al, omega_tau = 660 cm^-1 = 19.79 THz, so tau = 1/(2 pi 19.79 THz) = 8.0e-15 s
+      (to be located exactly; deposited films typically have tau = 5-7e-15 s from grain boundaries)
+    valid_range_thz: [[0.1, 6]]
+    checked: no
+descriptions:
+  - label: thz
+    model: drude
+    valid_range_thz: [[0.1, 6]]
+    sources: [ashcroft1976]
+    note: Free-electron metal; no interband contribution in the THz range.
+    parameters:
+      eps_inf: 1.0
+      effective_mass_ratio: 1.0
+      carrier_density: 1.81e29
+      scattering_time: {value: 8.0e-15, source: ordal1985}

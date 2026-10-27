@@ -1,0 +1,26 @@
+# cjcmaterials material file; syntax and field order: material_template.yaml in the repository root.
+name: air
+note: >-
+  Dry air approximated as vacuum (n = 1). Ported from optpumpthz (air), which gave no source. The
+  real index of air is n - 1 ~ 2.7e-4 in the visible (Ciddor, Appl. Opt. 35, 1566 (1996)), and humid
+  air has water-vapour absorption lines in the THz range; both are neglected here.
+sources:
+  bipm2019:
+    type: url
+    id: https://www.bipm.org/en/publications/si-brochure
+    citation: >-
+      Bureau International des Poids et Mesures, The International System of Units (SI brochure),
+      9th edition (2019)
+    location: >-
+      Section 2.3.1, the exactly defined speed of light in vacuum, so n = 1 for vacuum (candidate
+      source; optpumpthz gave none)
+    valid_range_thz: [[0.1, 20], [350, 1000]]
+    checked: no
+descriptions:
+  - label: constant
+    model: constant
+    valid_range_thz: [[0.1, 20], [350, 1000]]
+    sources: [bipm2019]
+    note: The two ranges are those of optpumpthz (THz and optical regime).
+    parameters:
+      n: 1.0

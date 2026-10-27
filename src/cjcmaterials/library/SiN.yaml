@@ -1,0 +1,24 @@
+# cjcmaterials material file; syntax and field order: material_template.yaml in the repository root.
+name: SiN
+note: >-
+  Silicon nitride thin film. New in cjcmaterials, from the n, k source files of
+  optpumpthz/scripts/pump_dTT. Film properties depend on the deposition method; which of the
+  paper's films this data set is still has to be checked.
+sources:
+  beliaev2022:
+    type: doi
+    id: 10.1016/j.tsf.2022.139568
+    citation: >-
+      L. Yu. Beliaev, E. Shkondin, A. V. Lavrinenko, O. Takayama, Optical, structural and composition
+      properties of silicon nitride films deposited by reactive radio-frequency sputtering, low
+      pressure and plasma-enhanced chemical vapor deposition, Thin Solid Films 763, 139568 (2022)
+    location: n, k of one of the films, numerical data kindly provided by Osamu Takayama (film to be identified)
+    valid_range_thz: [[178, 1418]]
+    checked: no
+descriptions:
+  - label: optical
+    model: tabulated
+    valid_range_thz: [[178, 1418]]
+    sources: [beliaev2022]
+    parameters:
+      file: SiN_Beliaev2022.csv

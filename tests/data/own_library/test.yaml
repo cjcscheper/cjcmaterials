@@ -1,0 +1,19 @@
+# The 'test' material of optpumpthz (a constant index of 1.5), kept here as an example of a user's
+# own material folder: get_material("test", folders="tests/data/own_library").
+name: test
+note: Constant index 1.5, for tests. optpumpthz also gave it a placeholder optical table, not ported.
+sources:
+  palik1985:
+    type: isbn
+    id: 0-12-544420-6
+    citation: E. D. Palik (ed.), Handbook of Optical Constants of Solids, Academic Press, Orlando (1985)
+    location: none; n = 1.5 is a round test value, typical of glass
+    valid_range_thz: [[0.1, 20], [350, 1000]]
+    checked: no
+descriptions:
+  - label: constant
+    model: constant
+    valid_range_thz: [[0.1, 20], [350, 1000]]
+    sources: [palik1985]
+    parameters:
+      n: 1.5

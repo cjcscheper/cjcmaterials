@@ -1,0 +1,64 @@
+# cjcmaterials material file; syntax and field order: material_template.yaml in the repository root.
+name: GaAs
+note: >-
+  Gallium arsenide at room temperature. Ported from optpumpthz (GaAs_n and GaAs_p, now one material:
+  the carrier type is chosen at use time). optpumpthz had no phonon for GaAs; the TO-phonon
+  oscillator here is new and its values are a candidate that still has to be checked.
+sources:
+  levinshtein1996:
+    type: isbn
+    id: 981-02-2934-8
+    citation: >-
+      M. Levinshtein, S. Rumyantsev, M. Shur (eds.), Handbook Series on Semiconductor Parameters,
+      Vol. 1: Si, Ge, C (Diamond), GaAs, GaP, GaSb, InAs, InP, InSb, World Scientific (1996)
+    location: >-
+      GaAs chapter: high-frequency (10.89) and static (12.90) dielectric constants and effective
+      masses (to be located exactly; optpumpthz cited Vol. 2 (1999), which covers ternary compounds)
+    valid_range_thz: [[0.1, 20]]
+    checked: no
+  sotoodeh2000:
+    type: doi
+    id: 10.1063/1.372274
+    citation: >-
+      M. Sotoodeh, A. H. Khalid, A. A. Rezazadeh, Empirical low-field mobility model for III-V
+      compounds applicable in device simulation codes, J. Appl. Phys. 87, 2890-2900 (2000)
+    location: Caughey-Thomas parameters for GaAs at 300 K (to be located exactly; mu in cm^2/Vs, N_ref in cm^-3)
+    valid_range_thz: [[0.1, 20]]
+    checked: no
+  palik1985:
+    type: isbn
+    id: 0-12-544420-6
+    citation: >-
+      E. D. Palik, Gallium Arsenide (GaAs), in E. D. Palik (ed.), Handbook of Optical Constants of
+      Solids, Academic Press, Orlando (1985)
+    location: >-
+      p. 429, Table II for n, k (transcribed 0.2-2.8 um; k not tabulated between 0.905 and 9.2 um).
+      The TO-phonon position and width (268.7 and 2.4 cm^-1) are candidate values from memory of
+      the chapter's infrared model, not yet found in the text
+    valid_range_thz: [[0.1, 20], [332, 1498]]
+    checked: no
+descriptions:
+  - label: thz
+    model: drude_lorentz
+    valid_range_thz: [[0.1, 20]]
+    sources: [levinshtein1996, palik1985]
+    note: >-
+      TO phonon as one Lorentz oscillator with strength eps_static - eps_inf = 12.90 - 10.89 (candidate);
+      free carriers as Drude with a Caughey-Thomas mobility.
+    parameters:
+      eps_inf: {value: 10.89, source: levinshtein1996}
+      oscillators:                         # nu = 268.7 cm^-1, gamma = 2.4 cm^-1 (candidate, see palik1985)
+        - {strength: 2.01, resonance_omega: 5.0614e13, damping: 4.521e11}
+      electrons:
+        effective_mass_ratio: {value: 0.063, source: levinshtein1996}
+        mobility: {model: caughey_thomas, mu_min: 0.0500, mu_max: 0.9400, n_ref: 6.0e22, alpha: 0.394, source: sotoodeh2000}
+      holes:
+        effective_mass_ratio: {value: 0.51, source: levinshtein1996}
+        mobility: {model: caughey_thomas, mu_min: 0.0020, mu_max: 0.04915, n_ref: 1.48e23, alpha: 0.38, source: sotoodeh2000}
+  - label: optical
+    model: tabulated
+    valid_range_thz: [[332, 1498]]
+    sources: [palik1985]
+    note: Undoped GaAs; n is tabulated from 0.2 um to 2.8 um but k only up to 0.905 um, so the range ends there.
+    parameters:
+      file: GaAs_Palik1985.csv

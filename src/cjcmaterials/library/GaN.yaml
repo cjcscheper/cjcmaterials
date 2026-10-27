@@ -1,0 +1,36 @@
+# cjcmaterials material file; syntax and field order: material_template.yaml in the repository root.
+name: GaN
+note: >-
+  Hexagonal (wurtzite) gallium nitride, ordinary ray. New in cjcmaterials, from the n, k source files
+  of optpumpthz/scripts/pump_dTT.
+sources:
+  kawashima1997:
+    type: doi
+    id: 10.1063/1.365671
+    citation: >-
+      T. Kawashima, H. Yoshikawa, S. Adachi, S. Fuke, K. Ohtsuka, Optical properties of hexagonal
+      GaN, J. Appl. Phys. 82, 3528-3535 (1997)
+    location: n, k from the refractiveindex.info export (to be compared with the paper's figures)
+    valid_range_thz: [[822, 2418]]
+    checked: no
+  logothetidis1994:
+    type: doi
+    id: 10.1103/PhysRevB.50.18017
+    citation: >-
+      S. Logothetidis, J. Petalas, M. Cardona, T. D. Moustakas, Optical properties and temperature
+      dependence of the interband transitions of cubic and hexagonal GaN, Phys. Rev. B 50,
+      18017-18029 (1994)
+    location: second source of the refractiveindex.info data set (part of the UV range)
+    valid_range_thz: [[822, 2418]]
+    checked: no
+descriptions:
+  - label: optical
+    model: tabulated
+    valid_range_thz: [[822, 2418]]
+    sources: [kawashima1997, logothetidis1994]
+    note: >-
+      The table spans 302-2418 THz, but below the band gap (365 nm, 822 THz) its k is a model-fit
+      tail of ~1e4 cm^-1, far above the measured sub-gap absorption (Santic and Scholz, Meas. Sci.
+      Technol. 19, 105303 (2008)); the range therefore starts at the gap.
+    parameters:
+      file: GaN_Kawashima1997.csv

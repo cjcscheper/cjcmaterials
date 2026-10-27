@@ -1,0 +1,41 @@
+# cjcmaterials material file; syntax and field order: material_template.yaml in the repository root.
+name: SiO2
+note: >-
+  Amorphous silicon dioxide (thin film). Ported from optpumpthz (SiO2). Its optical table there was
+  a placeholder (n = 1.5 everywhere) and is not ported.
+sources:
+  komandin2020:
+    type: doi
+    id: 10.1134/S1063783420020158
+    citation: >-
+      G. A. Komandin, V. S. Nozdrin, A. A. Pronin, O. E. Porodinkov, V. B. Anzin, I. E. Spektor,
+      Dielectric loss of thin-film SiO2 samples on Al in THz-IR range, Phys. Solid State 62,
+      267-272 (2020)
+    location: >-
+      oscillator parameters (to be located exactly; nu and gamma in cm^-1 in the paper, converted
+      here to rad/s as omega = 2 pi c nu)
+    valid_range_thz: [[0.1, 20]]
+    checked: no
+descriptions:
+  - label: thz
+    model: lorentz
+    valid_range_thz: [[0.1, 20]]
+    sources: [komandin2020]
+    note: The oscillators reach 2000 cm^-1 (60 THz); the range is the one optpumpthz used.
+    parameters:
+      eps_inf: 2.25
+      oscillators:                         # nu, gamma in cm^-1
+        - {strength: 5, resonance_omega: 7.535e13, damping: 4.144e13}         # 400, 220
+        - {strength: 1, resonance_omega: 8.476e13, damping: 8.288e12}         # 450, 44
+        - {strength: 0.33, resonance_omega: 1.130e14, damping: 3.014e13}      # 600, 160
+        - {strength: 0.11, resonance_omega: 1.507e14, damping: 1.111e13}      # 800, 59
+        - {strength: 0.078, resonance_omega: 1.703e14, damping: 1.413e13}     # 904, 75
+        - {strength: 0.02, resonance_omega: 1.763e14, damping: 1.074e13}      # 936, 57
+        - {strength: 0.23, resonance_omega: 2.01e14, damping: 7.346e12}       # 1067, 39
+        - {strength: 0.79, resonance_omega: 2.068e14, damping: 6.593e12}      # 1098, 35
+        - {strength: 0.3, resonance_omega: 2.181e14, damping: 1.469e13}       # 1158, 78
+        - {strength: 0.05, resonance_omega: 2.258e14, damping: 1.017e13}      # 1199, 54
+        - {strength: 0.002, resonance_omega: 2.741e14, damping: 1.130e13}     # 1455, 60
+        - {strength: 0.014, resonance_omega: 2.991e14, damping: 1.695e13}     # 1588, 90
+        - {strength: 0.003, resonance_omega: 3.522e14, damping: 1.695e13}     # 1870, 90
+        - {strength: 0.001, resonance_omega: 3.730e14, damping: 1.507e13}     # 1980, 80

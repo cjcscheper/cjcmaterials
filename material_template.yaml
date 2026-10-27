@@ -1,0 +1,154 @@
+# Template for a cjcmaterials material file: the syntax and field order of every file in the library.
+#
+# To add a material: copy this file to <name>.yaml in src/cjcmaterials/library/ (or in your own folder,
+# used with get_material(name, folders=...)), keep the sources and descriptions you need, delete the rest,
+# and replace the values. Then check it:
+#   python -m cjcmaterials.check_library                     # the bundled library
+#   python -m cjcmaterials.check_library --write-overview    # ... and regenerate LIBRARY.md
+#   python -m cjcmaterials.check_library my/folder --online  # your own folder, DOIs and URLs resolved
+#
+# The values below are real ones from the library (air, Al and Si), so this file loads and passes the
+# checker as it is (tests/test_checker.py); together they are not a real material.
+#
+# Rules:
+#   - SI units (m, s, rad/s, m^-3, m^2/Vs, K), as the model functions take them; frequency ranges in THz.
+#     Give the value in the paper's own unit as a trailing comment where it differs (e.g. cm^-1).
+#   - Every value has a source. A description lists its sources; a parameter with another source is
+#     written {value: <value>, source: <key>}.
+#   - The carrier density and carrier type are given at use time (refractive_index(..., carrier_density=,
+#     carrier_type="n"/"p")), not here; only a metal's fixed electron density belongs in the file.
+#   - Descriptions may overlap in frequency; then description="<label>" chooses at use time.
+
+name: material_template                    # the file name without .yaml
+note: >-
+  Free text about the material: what it is (crystalline, thin film, doping, temperature) and where the
+  file came from. Long text folds onto several lines like this.
+
+sources:                                   # key -> source; the keys are referred to below
+  bipm2019:                                # short key: first author (or organisation) + year
+    type: url                              # doi | isbn | url
+    id: https://www.bipm.org/en/publications/si-brochure
+    citation: >-
+      Bureau International des Poids et Mesures, The International System of Units (SI brochure),
+      9th edition (2019)
+    location: Section 2.3.1, the exactly defined speed of light in vacuum, so n = 1 for vacuum
+    valid_range_thz: [[0.1, 20], [350, 1000]]   # where the source's values apply; several intervals allowed
+    checked: no                            # after comparing with the source: "<who>, <YYYY-MM-DD>"
+  ashcroft1976:
+    type: isbn                             # ISBN-10 or ISBN-13, with or without hyphens
+    id: 0-03-083993-9
+    citation: N. W. Ashcroft, N. D. Mermin, Solid State Physics, Holt, Rinehart and Winston (1976)
+    location: >-
+      Ch. 1, Table 1.1 (free-electron density of Al, 18.1e22 cm^-3); free-electron mass and
+      eps_inf = 1 from the free-electron model of Ch. 1
+    valid_range_thz: [[0.1, 6]]
+    checked: no
+  ordal1985:
+    type: doi                              # the bare DOI, without https://doi.org/
+    id: 10.1364/AO.24.004493
+    citation: >-
+      M. A. Ordal, R. J. Bell, R. W. Alexander, L. L. Long, M. R. Querry, Optical properties of
+      fourteen metals in the infrared and far infrared: Al, Co, Cu, Au, Fe, Pb, Mo, Ni, Pd, Pt, Ag,
+      Ti, V, and W, Appl. Opt. 24, 4493-4499 (1985)
+    location: Drude damping of Al, omega_tau = 660 cm^-1, so tau = 8.0e-15 s
+    valid_range_thz: [[0.1, 6]]
+    checked: no
+  dai2004:
+    type: doi
+    id: 10.1364/JOSAB.21.001379
+    citation: >-
+      J. Dai, J. Zhang, W. Zhang, D. Grischkowsky, Terahertz time-domain spectroscopy
+      characterization of the far-infrared absorption and index of refraction of high-resistivity,
+      float-zone silicon, J. Opt. Soc. Am. B 21, 1379-1386 (2004)
+    location: Fig. 6(a); the Lorentz oscillator is a fit to that figure, not a value from the paper
+    valid_range_thz: [[0.1, 4.5]]
+    checked: no
+  wollack2020:
+    type: doi
+    id: 10.1364/OL.393847
+    citation: >-
+      E. J. Wollack, G. Cataldo, K. H. Miller, M. A. Quijada, Infrared properties of high-purity
+      silicon, Opt. Lett. 45, 4935-4938 (2020)
+    location: eps_inf = 11.7 (n = 3.42 below the phonon absorption)
+    valid_range_thz: [[0.1, 4.5]]
+    checked: no
+  vanexter1990:
+    type: doi
+    id: 10.1103/PhysRevB.41.12140
+    citation: >-
+      M. van Exter, D. Grischkowsky, Carrier dynamics of electrons and holes in moderately doped
+      silicon, Phys. Rev. B 41, 12140-12149 (1990)
+    location: conductivity effective masses 0.26 (electrons) and 0.37 (holes)
+    valid_range_thz: [[0.1, 4.5]]
+    checked: no
+  caughey1967:
+    type: doi
+    id: 10.1109/PROC.1967.6123
+    citation: >-
+      D. M. Caughey, R. E. Thomas, Carrier mobilities in silicon empirically related to doping and
+      field, Proc. IEEE 55, 2192-2193 (1967)
+    location: fit parameters for electrons and holes at 300 K (mu in cm^2/Vs, N_ref in cm^-3)
+    valid_range_thz: [[0.1, 4.5]]
+    checked: no
+  franta2017:
+    type: doi
+    id: 10.1016/j.apsusc.2017.02.021
+    citation: >-
+      D. Franta, A. Dubroka, C. Wang, A. Giglia, J. Vohanka, P. Franta, I. Ohlidal,
+      Temperature-dependent dispersion model of float zone crystalline silicon, Appl. Surf. Sci. 421,
+      405-419 (2017)
+    location: dispersion model at 300 K, numerical data kindly provided by Daniel Franta
+    valid_range_thz: [[0.97, 9671]]
+    checked: no
+
+descriptions:                              # one per model and frequency range, in any order
+  # constant: a fixed complex index n + i kappa.
+  - label: constant                        # short and unique; used as description="constant"
+    model: constant                        # constant | drude | lorentz | drude_lorentz | tabulated | graphene_sheet
+    valid_range_thz: [[0.1, 20], [350, 1000]]   # outside it a UserWarning; must lie inside its sources' ranges
+    sources: [bipm2019]                    # sources of the description and of every parameter without its own
+    note: Optional free text about this description.
+    parameters:                            # the keyword arguments of the model function, in SI units
+      n: 1.0
+      kappa: 0.0                           # optional, default 0
+
+  # drude: free carriers on a background eps_inf; give mobility or scattering_time (smith_c optional,
+  # for Drude-Smith). Here a metal, so its fixed electron density is in the file.
+  - label: drude
+    model: drude
+    valid_range_thz: [[0.1, 6]]
+    sources: [ashcroft1976]
+    parameters:
+      eps_inf: 1.0
+      effective_mass_ratio: 1.0
+      carrier_density: 1.81e29             # 18.1e22 cm^-3
+      scattering_time: {value: 8.0e-15, source: ordal1985}   # a parameter with its own source
+
+  # drude_lorentz: Lorentz oscillators (bound charges) plus free carriers on one eps_inf. A semiconductor:
+  # the carrier-dependent parameters sit in electrons/holes blocks, chosen with carrier_type="n"/"p",
+  # and the mobility follows a model evaluated at the use-time carrier density.
+  # (lorentz alone: the same without the electrons/holes blocks; see SiO2.yaml.
+  #  graphene_sheet: mobility, thickness, eps_inf, temperature, fermi_velocity; see Graphene.yaml.)
+  - label: drude_lorentz
+    model: drude_lorentz
+    valid_range_thz: [[0.1, 4.5]]
+    sources: [dai2004]
+    parameters:
+      eps_inf: {value: 11.7, source: wollack2020}
+      oscillators:                         # one line per oscillator; omega in rad/s = 2 pi c nu
+        - {strength: 0.02, resonance_omega: 1.57e12, damping: 3.14e13}   # nu = 8.3 cm^-1, gamma = 166.7 cm^-1
+      electrons:
+        effective_mass_ratio: {value: 0.26, source: vanexter1990}
+        mobility: {model: caughey_thomas, mu_min: 0.0065, mu_max: 0.1330, n_ref: 8.5e22, alpha: 0.72, source: caughey1967}
+      holes:
+        effective_mass_ratio: {value: 0.37, source: vanexter1990}
+        mobility: {model: caughey_thomas, mu_min: 0.00477, mu_max: 0.0495, n_ref: 6.3e22, alpha: 0.76, source: caughey1967}
+
+  # tabulated: n and k from a refractiveindex.info CSV export ('wl,n' and 'wl,k' blocks, wavelength in um),
+  # next to this file and named <material>_<Source><year>.csv. The range must lie inside the table.
+  - label: tabulated
+    model: tabulated
+    valid_range_thz: [[0.97, 9670]]
+    sources: [franta2017]
+    parameters:
+      file: Si_Franta2017.csv              # relative to this file

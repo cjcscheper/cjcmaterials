@@ -1,0 +1,82 @@
+# cjcmaterials material file; syntax and field order: material_template.yaml in the repository root.
+name: Si
+note: >-
+  Crystalline silicon at room temperature. Ported from optpumpthz (Si_n and Si_p, now one material:
+  the carrier type is chosen at use time).
+sources:
+  wollack2020:
+    type: doi
+    id: 10.1364/OL.393847
+    citation: >-
+      E. J. Wollack, G. Cataldo, K. H. Miller, M. A. Quijada, Infrared properties of high-purity
+      silicon, Opt. Lett. 45, 4935-4938 (2020)
+    location: eps_inf = 11.7 (n = 3.42 below the phonon absorption; to be located exactly)
+    valid_range_thz: [[0.1, 4.5]]
+    checked: no
+  vanexter1990:
+    type: doi
+    id: 10.1103/PhysRevB.41.12140
+    citation: >-
+      M. van Exter, D. Grischkowsky, Carrier dynamics of electrons and holes in moderately doped
+      silicon, Phys. Rev. B 41, 12140-12149 (1990)
+    location: conductivity effective masses 0.26 (electrons) and 0.37 (holes) (to be located exactly)
+    valid_range_thz: [[0.1, 4.5]]
+    checked: no
+  caughey1967:
+    type: doi
+    id: 10.1109/PROC.1967.6123
+    citation: >-
+      D. M. Caughey, R. E. Thomas, Carrier mobilities in silicon empirically related to doping and
+      field, Proc. IEEE 55, 2192-2193 (1967)
+    location: fit parameters for electrons and holes at 300 K (mu in cm^2/Vs, N_ref in cm^-3)
+    valid_range_thz: [[0.1, 4.5]]
+    checked: no
+  dai2004:
+    type: doi
+    id: 10.1364/JOSAB.21.001379
+    citation: >-
+      J. Dai, J. Zhang, W. Zhang, D. Grischkowsky, Terahertz time-domain spectroscopy
+      characterization of the far-infrared absorption and index of refraction of high-resistivity,
+      float-zone silicon, J. Opt. Soc. Am. B 21, 1379-1386 (2004)
+    location: >-
+      Fig. 6(a); the Lorentz oscillator is a fit to that figure made for optpumpthz, not a value
+      from the paper
+    valid_range_thz: [[0.1, 4.5]]
+    checked: no
+  franta2017:
+    type: doi
+    id: 10.1016/j.apsusc.2017.02.021
+    citation: >-
+      D. Franta, A. Dubroka, C. Wang, A. Giglia, J. Vohanka, P. Franta, I. Ohlidal,
+      Temperature-dependent dispersion model of float zone crystalline silicon, Appl. Surf. Sci. 421,
+      405-419 (2017)
+    location: dispersion model at 300 K, numerical data kindly provided by Daniel Franta
+    valid_range_thz: [[0.97, 9671]]
+    checked: no
+descriptions:
+  - label: thz
+    model: drude_lorentz
+    valid_range_thz: [[0.1, 4.5]]
+    sources: [dai2004]
+    note: >-
+      Lattice absorption of high-resistivity Si as one broad oscillator (fit to Dai 2004, Fig. 6(a));
+      free carriers as Drude with the Caughey-Thomas mobility.
+    parameters:
+      eps_inf: {value: 11.7, source: wollack2020}
+      oscillators:                         # nu = 8.3 cm^-1, gamma = 166.7 cm^-1 (overdamped fit)
+        - {strength: 0.02, resonance_omega: 1.57e12, damping: 3.14e13}
+      electrons:
+        effective_mass_ratio: {value: 0.26, source: vanexter1990}
+        mobility: {model: caughey_thomas, mu_min: 0.0065, mu_max: 0.1330, n_ref: 8.5e22, alpha: 0.72, source: caughey1967}
+      holes:
+        effective_mass_ratio: {value: 0.37, source: vanexter1990}
+        mobility: {model: caughey_thomas, mu_min: 0.00477, mu_max: 0.0495, n_ref: 6.3e22, alpha: 0.76, source: caughey1967}
+  - label: optical
+    model: tabulated
+    valid_range_thz: [[0.97, 9670]]
+    sources: [franta2017]
+    note: >-
+      Undoped Si, the full range of the table (0.97-9671 THz). optpumpthz started it at 101 THz; it now
+      overlaps the THz description at 0.97-4.5 THz, where description= has to choose between them.
+    parameters:
+      file: Si_Franta2017.csv

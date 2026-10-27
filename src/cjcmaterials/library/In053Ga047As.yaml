@@ -1,0 +1,42 @@
+# cjcmaterials material file; syntax and field order: material_template.yaml in the repository root.
+name: In053Ga047As
+note: >-
+  In0.53Ga0.47As (lattice-matched to InP) at room temperature. Ported from optpumpthz
+  (In053Ga047As_n and _p). optpumpthz marked eps_inf and both effective masses as wrong and gave
+  no source for them; they are kept unchanged here until checked. Drude only: the phonons near
+  7-8 THz are missing, so the valid range up to 20 THz is too wide for undoped material.
+sources:
+  levinshtein1999:
+    type: isbn
+    id: 981-02-2935-6
+    citation: >-
+      M. Levinshtein, S. Rumyantsev, M. Shur (eds.), Handbook Series on Semiconductor Parameters,
+      Vol. 2: Ternary and Quaternary III-V Compounds, World Scientific (1999)
+    location: >-
+      GaInAs chapter (candidate source: the values were marked wrong in optpumpthz and have not
+      been compared with it)
+    valid_range_thz: [[0.1, 20]]
+    checked: no
+  sotoodeh2000:
+    type: doi
+    id: 10.1063/1.372274
+    citation: >-
+      M. Sotoodeh, A. H. Khalid, A. A. Rezazadeh, Empirical low-field mobility model for III-V
+      compounds applicable in device simulation codes, J. Appl. Phys. 87, 2890-2900 (2000)
+    location: Caughey-Thomas parameters for In0.53Ga0.47As at 300 K (to be located exactly)
+    valid_range_thz: [[0.1, 20]]
+    checked: no
+descriptions:
+  - label: thz
+    model: drude
+    valid_range_thz: [[0.1, 20]]
+    sources: [levinshtein1999]
+    note: eps_inf and the effective masses were marked wrong in optpumpthz; check them first.
+    parameters:
+      eps_inf: 9.61
+      electrons:
+        effective_mass_ratio: 0.041
+        mobility: {model: caughey_thomas, mu_min: 0.0300, mu_max: 1.4000, n_ref: 1.3e23, alpha: 0.48, source: sotoodeh2000}
+      holes:
+        effective_mass_ratio: 0.2
+        mobility: {model: caughey_thomas, mu_min: 0.0010, mu_max: 0.0320, n_ref: 4.9e23, alpha: 0.403, source: sotoodeh2000}

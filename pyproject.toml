@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cjcmaterials"
+# The version is read from src/cjcmaterials/__init__.py (__version__), its only source.
+dynamic = ["version"]
+description = "Optical and electronic material models (Drude, Lorentz, graphene, tables) with a sourced, checkable material library."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "C.J.C. Scheper" }]
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+# Only for the scripts in examples/; cjcplot is pinned to a release tag. The package never imports it.
+examples = [
+    "cjcplot @ git+https://github.com/cjcscheper/cjcplot.git@v0.2.0",
+]
+
+[tool.setuptools.dynamic]
+version = { attr = "cjcmaterials.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# The material files and their tables are part of the package.
+[tool.setuptools.package-data]
+cjcmaterials = ["library/*.yaml", "library/*.csv"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

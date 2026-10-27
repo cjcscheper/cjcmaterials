@@ -1,0 +1,80 @@
+# cjcmaterials material file; syntax and field order: material_template.yaml in the repository root.
+name: Graphene
+note: >-
+  Single-layer graphene. Ported from optpumpthz (Graphene). The carrier density is a sheet density
+  [m^-2], given at use time; electrons and holes give the same response (symmetric Dirac cone).
+sources:
+  arts2018:
+    type: doi
+    id: 10.1063/1.5044265
+    citation: >-
+      K. Arts, R. Vervuurt, A. Bhattacharya, J. Gomez Rivas, J. W. Oosterbeek, A. A. Bol, Broadband
+      optical response of graphene measured by terahertz time-domain spectroscopy and FTIR
+      spectroscopy, J. Appl. Phys. 124, 073105 (2018)
+    location: intraband and interband sheet conductivity (to be located exactly; room temperature)
+    valid_range_thz: [[0.1, 1000]]
+    checked: no
+  boggild2017:
+    type: doi
+    id: 10.1088/2053-1583/aa8683
+    citation: >-
+      P. Boggild, D. M. A. Mackenzie, P. R. Whelan, D. H. Petersen, J. D. Buron, A. Zurutuza,
+      J. Gallop, L. Hao, P. U. Jepsen, Mapping the electrical properties of large-area graphene,
+      2D Mater. 4, 042003 (2017)
+    location: Eq. 6, scattering rate from the mobility
+    valid_range_thz: [[0.1, 1000]]
+    checked: no
+  dorgan2010:
+    type: doi
+    id: 10.1063/1.3483130
+    citation: >-
+      V. E. Dorgan, M.-H. Bae, E. Pop, Mobility and saturation velocity in graphene on SiO2,
+      Appl. Phys. Lett. 97, 082112 (2010)
+    location: >-
+      mobility versus carrier density (to be located exactly; mu_0 = 4650 cm^2/Vs,
+      n_ref = 1.1e13 cm^-2, alpha = 2.2)
+    valid_range_thz: [[0.1, 1000]]
+    checked: no
+  castroneto2009:
+    type: doi
+    id: 10.1103/RevModPhys.81.109
+    citation: >-
+      A. H. Castro Neto, F. Guinea, N. M. R. Peres, K. S. Novoselov, A. K. Geim, The electronic
+      properties of graphene, Rev. Mod. Phys. 81, 109-162 (2009)
+    location: Fermi velocity v_F ~ 1e6 m/s (candidate source; optpumpthz gave none)
+    valid_range_thz: [[0.1, 1000]]
+    checked: no
+  weber2010:
+    type: doi
+    id: 10.1063/1.3475393
+    citation: >-
+      J. W. Weber, V. E. Calado, M. C. M. van de Sanden, Optical constants of graphene measured by
+      spectroscopic ellipsometry, Appl. Phys. Lett. 97, 091904 (2010)
+    location: >-
+      n, k of the 0.34 nm thick effective layer, numerical data kindly provided by Jan-Willem Weber;
+      also the source of that thickness, which the sheet description uses at all its frequencies
+    valid_range_thz: [[0.1, 1400]]
+    checked: no
+descriptions:
+  - label: sheet
+    model: graphene_sheet
+    valid_range_thz: [[0.1, 1000]]
+    sources: [arts2018, boggild2017]
+    note: >-
+      Sheet conductivity spread over an effective slab of 0.34 nm. Room temperature is an assumption
+      of the model (optpumpthz fixed it at 300 K).
+    parameters:
+      mobility: {model: caughey_thomas, mu_min: 0.0, mu_max: 0.4650, n_ref: 1.1e17, alpha: 2.2, source: dorgan2010}
+      thickness: {value: 0.34e-9, source: weber2010}
+      eps_inf: 1.0
+      temperature: 300.0
+      fermi_velocity: {value: 1.0e6, source: castroneto2009}
+  - label: optical
+    model: tabulated
+    valid_range_thz: [[1000, 1400]]
+    sources: [weber2010]
+    note: >-
+      Effective-layer n, k (0.34 nm). The table spans 300-1422 THz; the range is the one optpumpthz
+      used, so that it does not overlap the sheet description.
+    parameters:
+      file: graphene_Weber2010.csv
