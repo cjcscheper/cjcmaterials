@@ -23,7 +23,16 @@ sources:
     citation: >-
       M. Sotoodeh, A. H. Khalid, A. A. Rezazadeh, Empirical low-field mobility model for III-V
       compounds applicable in device simulation codes, J. Appl. Phys. 87, 2890-2900 (2000)
-    location: Caughey-Thomas parameters for In0.53Ga0.47As at 300 K (to be located exactly)
+    location: >-
+      Table I, In0.53Ga0.47As (electron: 14000, 300 cm^2/Vs, 1.3e17 cm^-3, 0.48; hole: 320, 10
+      cm^2/Vs, 4.9e17 cm^-3, 0.403). Sec. IV G: fitted to low- and high-doping data, no density
+      range given; the hole parameters rest on rather limited data. Eq. (4) with T = 300 K. A DC
+      (Hall) mobility of majority carriers in bulk, uncompensated material, independent of dopant
+      and growth method; minority-carrier mobility is assumed equal to it, which the paper warns can
+      be badly off; the Hall factor can reach 4 for low-doped p-type. Not for T below 100-150 K. The
+      paper says nothing about frequency or about the Lorentz part: it supports only the mobility of
+      the Drude term, and its range here is the description's, assuming the DC mobility holds at THz
+      frequencies.
     valid_range_thz: [[0.1, 20]]
     checked: no
 descriptions:

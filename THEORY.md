@@ -185,8 +185,8 @@ wavelength in µm), converts each block to frequency f = c/λ, and
 on its own grid, so the table values come back exactly at the table points.
 Outside a block's range the result is NaN: optical constants change abruptly
 at band edges, and extrapolating them is a physics choice the package does not
-make for you. Many handbooks do not tabulate κ in the transparent region (GaAs
-and InP in Palik's handbook); the description is then valid only where both
+make for you. Many handbooks do not tabulate κ in the transparent region (InP in
+Palik's handbook); the description is then valid only where both
 exist, and the checker tests exactly that.
 
 ## 8. Descriptions, valid ranges and carrier densities

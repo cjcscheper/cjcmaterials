@@ -1,9 +1,8 @@
 # cjcmaterials material file; syntax and field order: material_template.yaml in the repository root.
 name: GaAs
 note: >-
-  Gallium arsenide at room temperature. Ported from optpumpthz (GaAs_n and GaAs_p, now one material:
-  the carrier type is chosen at use time). optpumpthz had no phonon for GaAs; the TO-phonon
-  oscillator here is new and its values are a candidate that still has to be checked.
+  Gallium arsenide at room temperature, n- or p-type: the carrier type and density are chosen at use
+  time.
 sources:
   levinshtein1996:
     type: isbn
@@ -12,53 +11,126 @@ sources:
       M. Levinshtein, S. Rumyantsev, M. Shur (eds.), Handbook Series on Semiconductor Parameters,
       Vol. 1: Si, Ge, C (Diamond), GaAs, GaP, GaSb, InAs, InP, InSb, World Scientific (1996)
     location: >-
-      GaAs chapter: high-frequency (10.89) and static (12.90) dielectric constants and effective
-      masses (to be located exactly; optpumpthz cited Vol. 2 (1999), which covers ternary compounds)
+      GaAs chapter 4, p. 77: effective masses of electrons (0.063) and holes: heavy hole m_hh = 0.51,
+      light hole m_lh = 0.082; the band masses are used for the Drude hole mass of franta2026.
+      For comparison, the textbook conductivity mass of both bands: at 300 K each band filled in
+      proportion to m^(3/2) (94 % heavy, 6 % light holes), and the Drude response goes as sum N_i /
+      m_i, so m_c = (m_hh^(3/2) + m_lh^(3/2)) / (m_hh^(1/2) + m_lh^(1/2)) = (0.3642 + 0.0235) /
+      (0.7141 + 0.2864) = 0.3875, the light holes giving 29 % of the hole plasma frequency squared
+      (parabolic, isotropic bands, one shared scattering time). Not used: with 0.3875 the
+      franta2026 free-carrier strengths would need hole densities above both samples' nominal
+      doping
     valid_range_thz: [[0.1, 20]]
-    checked: no
+    checked: "C. Scheper, 2026-10-28"
   sotoodeh2000:
     type: doi
     id: 10.1063/1.372274
     citation: >-
       M. Sotoodeh, A. H. Khalid, A. A. Rezazadeh, Empirical low-field mobility model for III-V
       compounds applicable in device simulation codes, J. Appl. Phys. 87, 2890-2900 (2000)
-    location: Caughey-Thomas parameters for GaAs at 300 K (to be located exactly; mu in cm^2/Vs, N_ref in cm^-3)
-    valid_range_thz: [[0.1, 20]]
-    checked: no
-  palik1985:
-    type: isbn
-    id: 0-12-544420-6
-    citation: >-
-      E. D. Palik, Gallium Arsenide (GaAs), in E. D. Palik (ed.), Handbook of Optical Constants of
-      Solids, Academic Press, Orlando (1985)
     location: >-
-      p. 429, Table II for n, k (transcribed 0.2-2.8 um; k not tabulated between 0.905 and 9.2 um).
-      The TO-phonon position and width (268.7 and 2.4 cm^-1) are candidate values from memory of
-      the chapter's infrared model, not yet found in the text
-    valid_range_thz: [[0.1, 20], [332, 1498]]
-    checked: no
+      Table I, GaAs (electron: 9400, 500 cm^2/Vs, 6.0e16 cm^-3, 0.394; hole: 491.5, 20 cm^2/Vs,
+      1.48e17 cm^-3, 0.38). Sec. IV A: fitted to data at 1e13-2e19 cm^-3 (n-type) and 1e14-2e21
+      cm^-3 (p-type); for holes it fits C-doped GaAs above 1e18 cm^-3 best (Zn- or Be-doped is 20-30
+      % lower). Eq. (4) with T = 300 K. A DC (Hall) mobility of majority carriers in bulk,
+      uncompensated material, independent of dopant and growth method; minority-carrier mobility is
+      assumed equal to it, which the paper warns can be badly off; the Hall factor can reach 4 for
+      low-doped p-type. Not for T below 100-150 K. The paper says nothing about frequency or about
+      the Lorentz part: it supports only the mobility of the Drude term, and its range here is the
+      description's, assuming the DC mobility holds at THz frequencies.
+    valid_range_thz: [[0.1, 20]]
+    checked: "C. Scheper, 2026-10-28"
+  franta2026:
+    type: doi
+    id: 10.1063/5.0314388
+    citation: >-
+      D. Franta, B. Hroncová, M. Muresan, S. Zollner, Dispersion models describing coupled systems in
+      doped crystals. II. Infrared phonon excitations in GaAs single crystals and phonon-plasmon
+      coupling in Zn-doped GaAs, J. Appl. Phys. 139, 175704 (2026)
+    location: >-
+      n, k of undoped GaAs at 0.895-399.6 um, numerical data kindly provided by Daniel Franta
+      (GaAs_Franta2026.csv); gotten from polyanskiy2024. TO phonon of
+      the final dispersion model: f_TO = 8.0337 THz (Eq. 19), f_LO = 8.7361 THz (Eq. 36),
+      eps_inf = 10.873 (Eq. 22); damping from the separate single-Lorentz fit to reflectance at
+      230-320 cm^-1, gamma = 0.2613 meV (Table V, "Lorentz" column). Undoped VGF GaAs wafer
+      (1.6-2.2e8 Ohm cm), FTIR reflectance/transmittance and IR ellipsometry, 300 K. Drude hole
+      mass, computed here from Sec. IV E, Eq. 38 and Table VIII (Zn-doped wafers, light holes j = 1,
+      heavy holes j = 2, strengths N proportional to p_j / m_j): N_lh / N_hh = 99.8 / 28.0 = 3.56
+      (sample #3) and 5.46 / 1.73 = 3.16 (#2). With the band masses of levinshtein1996 (m_lh =
+      0.082, m_hh = 0.51) the population ratio p_lh / p_hh = 3.56 x 0.082 / 0.51 = 0.573 (36 %
+      light holes), and the conductivity mass m_c = (1 + 0.573) / (0.573 / 0.082 + 1 / 0.51) =
+      0.176 (#3; #2: 0.185), rounded to 0.18. Check: the total strength (Ep^2 = 2N / pi) with this
+      mass gives p = 1.04e19 cm^-3 (#3, nominal 0.7-2e19, Table I) and 6.1e17 cm^-3 (#2, nominal
+      2.3-8.0e17). An effective optical mass for p = 1e17-1e19 cm^-3: the 36 % light holes differ
+      from the 6 % of parabolic bands, and the paper's two Drude terms have different dampings,
+      which one Drude term cannot reproduce
+    valid_range_thz: [[0.1, 334.8]]
+    checked: "C. Scheper, 2026-10-28"
+  papatryfonos2021:
+    type: doi
+    id: 10.1063/5.0039631
+    citation: >-
+      K. Papatryfonos, T. Angelova, A. Brimont, B. Reid, S. Guldin, P. R. Smith, M. Tang, K. Li,
+      A. J. Seeds, H. Liu, D. R. Selviah, Refractive indices of MBE-grown AlxGa1-xAs ternary alloys in
+      the transparent wavelength region, AIP Adv. 11, 025327 (2021)
+    location: >-
+      n, k of MBE-grown GaAs (x = 0) at 0.2605-1.879 um, numerical data kindly provided by
+      Konstantinos Papatryfonos (GaAs_Papatryfonos2021.csv) via polyanskiy2024.
+    valid_range_thz: [[159.6, 1150]]
+    checked: "C. Scheper, 2026-10-28"
+  polyanskiy2024:
+    type: doi
+    id: 10.1038/s41597-023-02898-2
+    citation: >-
+      M. N. Polyanskiy, "Refractiveindex.info database of optical constants", Sci. Data 11, 94
+      (2024)
+    location: >-
+      refractiveindex.info database, GaAs: the Franta et al. (2026) data (0.895-399.6 um) and the
+      Papatryfonos et al. (2021) data (0.2605-1.879 um), in its CSV export format as
+      GaAs_Franta2026.csv and GaAs_Papatryfonos2021.csv
+    valid_range_thz: [[0.751, 1150]]
+    checked: "C. Scheper, 2026-10-28"
 descriptions:
   - label: thz
     model: drude_lorentz
-    valid_range_thz: [[0.1, 20]]
-    sources: [levinshtein1996, palik1985]
+    valid_range_thz: [[0.1, 7.5]]
+    sources: [franta2026, sotoodeh2000]
     note: >-
-      TO phonon as one Lorentz oscillator with strength eps_static - eps_inf = 12.90 - 10.89 (candidate);
-      free carriers as Drude with a Caughey-Thomas mobility.
+      TO phonon as one Lorentz oscillator with the literature values of franta2026 (no fit); the
+      strength S = eps_s - eps_inf with eps_s = eps_inf (f_LO/f_TO)^2 (Lyddane-Sachs-Teller, as in
+      Franta Eq. 22) = 12.857. The range ends below the resonance: against the franta2026 table n
+      agrees to 0.1 % up to 5 THz and 0.5 % up to 7.5 THz, but by up to 17 % at 8.0-8.8 THz (1.4 %
+      at 8.8-10 THz, 0.2 % at 10-20 THz). With the damping, Re eps < 0 at 8.0352-8.7342 THz, 0.002
+      THz inside f_TO and f_LO. 
+      Free carriers as Drude with a Caughey-Thomas mobility.
     parameters:
-      eps_inf: {value: 10.89, source: levinshtein1996}
-      oscillators:                         # nu = 268.7 cm^-1, gamma = 2.4 cm^-1 (candidate, see palik1985)
-        - {strength: 2.01, resonance_omega: 5.0614e13, damping: 4.521e11}
+      eps_inf: 10.873                      # Franta Eq. 22
+      oscillators:                         # f_TO = 8.0337 THz (267.98 cm^-1), gamma = 63.182 GHz (2.108 cm^-1)
+        # strength = eps_inf ((f_LO/f_TO)^2 - 1) with f_LO = 8.7361 THz (Eq. 36): 10.873 (1.182489 - 1)
+        - {strength: 1.984406, resonance_omega: 5.047723e13, damping: 3.969842e11}
       electrons:
         effective_mass_ratio: {value: 0.063, source: levinshtein1996}
         mobility: {model: caughey_thomas, mu_min: 0.0500, mu_max: 0.9400, n_ref: 6.0e22, alpha: 0.394, source: sotoodeh2000}
       holes:
-        effective_mass_ratio: {value: 0.51, source: levinshtein1996}
+        effective_mass_ratio: {value: 0.18, source: franta2026}   # from the light/heavy-hole Drude split with m_lh = 0.082, m_hh = 0.51
         mobility: {model: caughey_thomas, mu_min: 0.0020, mu_max: 0.04915, n_ref: 1.48e23, alpha: 0.38, source: sotoodeh2000}
+  - label: infrared
+    model: tabulated
+    valid_range_thz: [[0.751, 334.8]]
+    sources: [franta2026, polyanskiy2024]
+    note: >-
+      Undoped GaAs, the full range of the table (0.895-399.6 um, 0.750-334.9 THz), bounds rounded
+      inward. It overlaps the THz description at 0.751-7.5 THz, where description= has to choose
+      between them. Above 334.8 THz the optical description takes over.
+    parameters:
+      file: GaAs_Franta2026.csv
   - label: optical
     model: tabulated
-    valid_range_thz: [[332, 1498]]
-    sources: [palik1985]
-    note: Undoped GaAs; n is tabulated from 0.2 um to 2.8 um but k only up to 0.905 um, so the range ends there.
+    valid_range_thz: [[334.8, 1150]]
+    sources: [papatryfonos2021, polyanskiy2024]
+    note: >-
+      Above the end of the Franta table (0.895 um) up to the end of this table (0.2605 um), bounds
+      rounded inward; the table starts at 1.879 um (159.6 THz), but below 334.8 THz Franta is used.
+      At 334.8 THz n is 3.534 here and 3.595 in Franta's table (1.7 % apart).
     parameters:
-      file: GaAs_Palik1985.csv
+      file: GaAs_Papatryfonos2021.csv

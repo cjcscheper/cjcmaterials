@@ -139,10 +139,46 @@ def test_frequencies_outside_the_chosen_range_warn_with_material_range_and_sourc
 
 
 def test_tabulated_material_warns_and_gives_nan_beyond_its_table():
-    """GaAs optical below its range warns; below the kappa table (331 THz) kappa is NaN, not extrapolated."""
-    with pytest.warns(UserWarning, match="GaAs, description 'optical'"):
-        index = refractive_index(get_material("GaAs"), thz(200.0, 375.0), description="optical")
-    assert np.isnan(index[0].imag) and np.isfinite(index[1])
+    """GaAs infrared below its range warns; below the table (0.750 THz) n and kappa are NaN, not extrapolated."""
+    with pytest.warns(UserWarning, match="GaAs, description 'infrared'"):
+        index = refractive_index(get_material("GaAs"), thz(0.5, 2.0), description="infrared")
+    assert np.isnan(index[0].real) and np.isnan(index[0].imag) and np.isfinite(index[1])
+
+
+def test_gaas_phonon_gives_the_franta_static_permittivity_and_thz_index():
+    """Franta's f_TO, f_LO, eps_inf and gamma give eps_s = 12.857 (LST), n = 3.590 and kappa = 2.8e-4 at 1 THz."""
+    material = get_material("GaAs")
+    # At 0.1 THz the phonon adds S (f/f_TO)^2 ~ 3e-4 to eps_s, inside the tolerance.
+    assert permittivity(material, thz(0.1), description="thz").real == pytest.approx(12.857, abs=0.001)
+    index = refractive_index(material, thz(1.0), description="thz")
+    assert index.real == pytest.approx(3.590, abs=0.001)
+    # A factor 2 pi wrong in gamma would show here as kappa 2 pi times off.
+    assert index.imag == pytest.approx(2.8e-4, rel=0.01)
+
+
+def test_gaas_phonon_follows_the_franta_table_up_to_75_thz_and_has_its_reststrahlen_band():
+    """n within 0.5 % of Franta's full model at 0.76-7.5 THz; eps' < 0 between f_TO and f_LO, > 0 below."""
+    material = get_material("GaAs")
+    omega = thz(*np.geomspace(0.76, 7.5, 200))
+    model = refractive_index(material, omega, description="thz")
+    table = refractive_index(material, omega, description="infrared")
+    np.testing.assert_allclose(model.real, table.real, rtol=0.005)
+    # With the damping the zero crossings lie 0.002 THz inside f_TO = 8.0337 and f_LO = 8.7361 THz.
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        band = permittivity(material, thz(*np.linspace(8.0337 + 0.002, 8.7361 - 0.002, 200)), description="thz")
+        below = permittivity(material, thz(*np.linspace(0.1, 8.0337, 200)), description="thz")
+    assert np.all(band.real < 0) and np.all(below.real > 0)
+
+
+def test_gaas_visible_range_continues_the_franta_table():
+    """Above the gap Papatryfonos' table absorbs (kappa > 0) and meets Franta's at 334.8 THz within 2 %."""
+    material = get_material("GaAs")
+    assert select_description(material, thz(500.0)).label == "optical"
+    assert refractive_index(material, thz(500.0)).imag > 0.1
+    below = refractive_index(material, thz(334.8), description="infrared")
+    above = refractive_index(material, thz(334.8), description="optical")
+    assert above.real == pytest.approx(below.real, rel=0.02)
 
 
 def test_undoped_inp_needs_no_carrier_inputs():
@@ -243,7 +279,7 @@ def test_graphene_needs_a_sheet_density():
 
 def test_conductivity_is_minus_i_omega_eps0_times_eps_minus_one():
     """The total conductivity follows from eps for every description, tables included."""
-    material, omega = get_material("GaAs"), thz(400.0)
+    material, omega = get_material("GaAs"), thz(100.0)
     eps = permittivity(material, omega)
     assert conductivity(material, omega) == pytest.approx(-1j * omega * VACUUM_PERMITTIVITY * (eps - 1.0))
 

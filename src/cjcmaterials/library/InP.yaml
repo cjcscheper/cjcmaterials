@@ -28,7 +28,16 @@ sources:
     citation: >-
       M. Sotoodeh, A. H. Khalid, A. A. Rezazadeh, Empirical low-field mobility model for III-V
       compounds applicable in device simulation codes, J. Appl. Phys. 87, 2890-2900 (2000)
-    location: Caughey-Thomas parameters for InP at 300 K (to be located exactly; mu in cm^2/Vs, N_ref in cm^-3)
+    location: >-
+      Table I, InP (electron: 5200, 400 cm^2/Vs, 3.0e17 cm^-3, 0.47; hole: 170, 10 cm^2/Vs, 4.87e17
+      cm^-3, 0.62). Sec. IV C: electrons fitted to the Anderson et al. data at 1e15-5e19 cm^-3; for
+      holes no density range is given (Fig. 7). Eq. (4) with T = 300 K. A DC (Hall) mobility of
+      majority carriers in bulk, uncompensated material, independent of dopant and growth method;
+      minority-carrier mobility is assumed equal to it, which the paper warns can be badly off; the
+      Hall factor can reach 4 for low-doped p-type. Not for T below 100-150 K. The paper says
+      nothing about frequency or about the Lorentz part: it supports only the mobility of the Drude
+      term, and its range here is the description's, assuming the DC mobility holds at THz
+      frequencies.
     valid_range_thz: [[0.06, 21]]
     checked: no
   alyabyeva2017:

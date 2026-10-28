@@ -1,8 +1,8 @@
 """Undoped InP, GaAs and Si from the library in the THz range: n solid, kappa dashed.
 
 Each material's THz description is used inside its own valid range only, so nothing here
-extrapolates: InP (0.06-21 THz) and GaAs (0.1-20 THz) show their TO-phonon resonances near 9.1 and
-8.1 THz, where n swings and kappa peaks; silicon's THz description ends at 4.5 THz.
+extrapolates: InP (0.06-21 THz) shows its TO-phonon resonance near 9.1 THz, where n swings and kappa
+peaks; GaAs (0.1-7.5 THz) stops below its phonon at 8.0 THz, where n rises; silicon's ends at 4.5 THz.
 """
 
 from pathlib import Path

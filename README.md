@@ -243,8 +243,8 @@ below it κ dominates, just above it n dips.
 ### Semiconductors from the library
 
 `example_semiconductors_thz.py`: undoped InP, GaAs and Si, each in the
-range of its THz description. The TO phonons of GaAs (8.1 THz) and InP
-(9.1 THz) show as a swing in n and a peak in κ.
+range of its THz description. The TO phonon of InP (9.1 THz) shows as a
+swing in n and a peak in κ; GaAs stops at 7.5 THz, below its phonon at 8.0 THz.
 
 <p align="center">
   <img src="examples/example_semiconductors_thz.png" alt="n and kappa of InP, GaAs and Si from 0.1 to 10 THz" width="320">

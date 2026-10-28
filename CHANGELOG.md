@@ -20,13 +20,33 @@ existing scripts.
 ### Changed
 - Al: the free-electron Drude description `thz` (0.1–6 THz, Ashcroft and
   Mermin, Ordal 1985) is replaced by Rakić (1998)'s Lorentz–Drude model,
-  `lorentz_drude`, valid 1.21–4835 THz (its fit range 0.005–20 eV); the
+  `lorentz_drude`, valid 1.21–4835 THz (0.005–20 eV, the range of the
+  refractiveindex.info script; the paper's range is 0.1–6 eV); the
   parameters are converted from eV to SI. Scripts using
   `description="thz"` for Al need `description="lorentz_drude"`; below
   1.21 THz it now warns.
 - air: lab air with n = 1.0003 from the Ciddor (1996) model instead of
   vacuum. Two descriptions: `optical` (177.4–1303.4 THz, Ciddor) and `thz`
   (0.001–177.4 THz, the same constant continued, bounded by vacuum n = 1).
+- GaAs: Palik (1985) is replaced by Franta et al. (2026). The table
+  `GaAs_Franta2026.csv` (undoped, 0.751–334.8 THz) is the new `infrared`
+  description, and the TO-phonon oscillator and eps_inf of the `thz`
+  description take Franta's literature values instead of unsourced
+  candidates: f_TO = 8.0337 THz, f_LO = 8.7361 THz, eps_inf = 10.873,
+  gamma = 63.18 GHz, strength from the LST relation (eps_s = 12.857). The
+  `thz` description is now valid 0.1–7.5 THz (was 0.1–20 THz): n agrees with
+  Franta's table to 0.5 % there, but by up to 17 % at the resonance.
+- GaAs: the hole effective mass of the `thz` description is 0.18 (was
+  0.51, the heavy-hole band mass alone): the conductivity mass from Franta
+  et al. (2026)'s light/heavy-hole Drude split of Zn-doped GaAs with the band
+  masses of Levinshtein (1996); it reproduces the nominal doping of both of
+  Franta's samples. The Drude hole plasma frequency rises by 1.7× at the
+  same density.
+- GaAs: the `optical` description is now the Papatryfonos et al. (2021)
+  table of MBE-grown GaAs at 334.8–1150 THz (was Palik, 332–1498 THz).
+
+### Removed
+- GaAs: the Palik (1985) table.
 
 ## [0.1.0] - 2026-10-27
 
